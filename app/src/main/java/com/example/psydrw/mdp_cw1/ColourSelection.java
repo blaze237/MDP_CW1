@@ -1,6 +1,5 @@
 package com.example.psydrw.mdp_cw1;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,7 +19,8 @@ public class ColourSelection extends AppCompatActivity {
     int r,g,b;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_colour_selection);
 
@@ -28,8 +28,6 @@ public class ColourSelection extends AppCompatActivity {
         greenBar =(SeekBar) findViewById(R.id.greenBar);
         blueBar =(SeekBar) findViewById(R.id.blueBar);
 
-        colourPreview = (View)findViewById(R.id.colourPreview);
-        colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
 
         int colour =  getIntent().getIntExtra("Current Colour",0xff000000);
 
@@ -37,6 +35,10 @@ public class ColourSelection extends AppCompatActivity {
         r = (colour >> 16) & 0xff;
         g = (colour >> 8) & 0xff;
         b = colour & 0xff;
+
+        colourPreview = (View)findViewById(R.id.colourPreview);
+        colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
+
 
         //Init scroll bars
         redBar.setProgress(r);
@@ -95,6 +97,18 @@ public class ColourSelection extends AppCompatActivity {
 
         });
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent result = new Intent();
+
+        int colour = Color.argb(255, r, g, b);
+
+        result.putExtra("New Colour",colour);
+        setResult(Activity.RESULT_OK, result);
+        finish();
     }
 
 

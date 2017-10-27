@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FingerPainterView fView;
 
+    private int colour = 0xff000000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -22,7 +24,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         fView = (FingerPainterView)findViewById(R.id.fingerview);
+
+        //Restore state after app is rotated etc
+        if(savedInstanceState != null)
+        {
+            colour = savedInstanceState.getInt("Colour");
+            fView.setColour(colour);
+        }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state)
+    {
+        super.onSaveInstanceState(state);
+        state.putInt("Colour",colour);
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -32,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
             //Set new brush colour
             if (requestCode == COLOUR_REQUEST)
             {
-                int col = data.getIntExtra("New Colour",0xff000000);
-                fView.setColour(col);
+                colour = data.getIntExtra("New Colour",0xff000000);
+                fView.setColour(colour);
             }
         }
     }
