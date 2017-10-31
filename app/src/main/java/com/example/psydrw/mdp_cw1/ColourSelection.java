@@ -11,12 +11,12 @@ import android.widget.SeekBar;
 
 public class ColourSelection extends AppCompatActivity {
 
-    SeekBar redBar;
-    SeekBar greenBar;
-    SeekBar blueBar;
-    View colourPreview;
+    private SeekBar redBar;
+    private SeekBar greenBar;
+    private SeekBar blueBar;
+    private View colourPreview;
 
-    int r,g,b;
+    private int r,g,b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

@@ -2,4 +2,7 @@
     <string name="app_name">Psydrw_paint</string>
     <string name="colourButton">Colour</string>
     <string name="brushButton">Brush</string>
+    <string name="square">Square</string>
+    <string name="round">Round</string>
+    <string name="set_brush_type">Set Brush Type</string>
 </resources>

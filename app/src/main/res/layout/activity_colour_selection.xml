@@ -7,12 +7,13 @@
     android:orientation="vertical"
     tools:context="com.example.psydrw.mdp_cw1.ColourSelection">
 
-    <Space
+    <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.22"
-        android:background="#ff0000ff"
-        android:visibility="visible" />
+        android:layout_weight="0.12"
+        android:text="Set Brush Colour"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <View
         android:id="@+id/colourPreview"
