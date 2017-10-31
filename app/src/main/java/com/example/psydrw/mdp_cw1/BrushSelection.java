@@ -19,7 +19,6 @@ public class BrushSelection extends AppCompatActivity
     private SeekBar widthBar;
     private ToggleButton roundToggle;
     private ToggleButton squareToggle;
-    
     private int width;
     private Paint.Cap type;
 
@@ -116,11 +115,6 @@ public class BrushSelection extends AppCompatActivity
             type = Paint.Cap.SQUARE;
         }
 
-
-    }
-
-    public void onButtToggleClick(View view)
-    {
 
     }
 

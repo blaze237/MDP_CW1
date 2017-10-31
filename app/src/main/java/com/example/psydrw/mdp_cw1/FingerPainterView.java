@@ -112,6 +112,22 @@ public class FingerPainterView extends View {
         this.uri = uri;
     }
 
+    public void loadCustom(Uri uri)
+    {
+        try {
+            // attempt to load the uri provided, scale to fit our canvas
+            InputStream stream = context.getContentResolver().openInputStream(uri);
+            Bitmap bm = BitmapFactory.decodeStream(stream);
+            bitmap  = Bitmap.createScaledBitmap(bm, Math.max(1080, 1920), Math.max(1080, 1920), false);
+            stream.close();
+            bm.recycle();
+        } catch(IOException e) {
+            Log.e("FingerPainterView", e.toString());
+        }
+
+        canvas = new Canvas(bitmap);
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();

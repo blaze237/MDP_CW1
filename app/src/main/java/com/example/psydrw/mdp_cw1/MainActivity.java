@@ -3,6 +3,7 @@ package com.example.psydrw.mdp_cw1;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,8 +11,10 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int COLOUR_REQUEST = 1;
-    static final int BRUSH_REQUEST = 2;
+    private static final int COLOUR_REQUEST = 1;
+    private static final int BRUSH_REQUEST = 2;
+    private static final int IMAGE_REQUEST = 3;
+
 
     private FingerPainterView fView;
     private int brushColour;
@@ -74,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 brushType = (Paint.Cap) data.getSerializableExtra("New Type");
                 fView.setBrush(brushType);
             }
+            //Handle loading of images
+            else if(requestCode == IMAGE_REQUEST)
+            {
+                Uri uri = data.getData();
+                fView.loadCustom(uri);
+            }
         }
     }
 
@@ -94,4 +103,9 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(colScreen,COLOUR_REQUEST);
     }
 
+    public void onClickImageSelect(View view)
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
 }
