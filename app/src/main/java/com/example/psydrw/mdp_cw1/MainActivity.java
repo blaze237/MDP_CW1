@@ -1,19 +1,27 @@
 package com.example.psydrw.mdp_cw1;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+
+//Save brush data on resume
+//Do resume saving for sub activities to
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int COLOUR_REQUEST = 1;
     private static final int BRUSH_REQUEST = 2;
     private static final int IMAGE_REQUEST = 3;
+    private static final int STORAGE_PERMISSION_REQUEST = 4;
 
 
     private FingerPainterView fView;
@@ -86,6 +94,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        //If return a permision request of granted for external storage, then continue with opening the image picker activity the user had previously attempted to launch prior to enabling permission to do so
+        if(requestCode == STORAGE_PERMISSION_REQUEST)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, IMAGE_REQUEST);
+            }
+        }
+    }
+
 
     public void SetBrush(View view)
     {
@@ -105,7 +127,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickImageSelect(View view)
     {
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, IMAGE_REQUEST);
+        //Check if storage permissions have been granted for the app
+        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        {
+            Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, IMAGE_REQUEST);
+        }
+        //If not, request them
+        else
+        {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_REQUEST);
+        }
+
     }
+
+
 }

@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +55,8 @@ public class FingerPainterView extends View {
     private Bitmap bitmap;
     private Path path;
     private Uri uri;
+
+
 
     public FingerPainterView(Context context) {
         super(context); // application context
@@ -114,11 +117,16 @@ public class FingerPainterView extends View {
 
     public void loadCustom(Uri uri)
     {
+        int width = this.getWidth();
+        int height = this.getHeight();
+
+        Log.d("myTag", "Load at size" + width + "x" + height);
+
         try {
             // attempt to load the uri provided, scale to fit our canvas
             InputStream stream = context.getContentResolver().openInputStream(uri);
             Bitmap bm = BitmapFactory.decodeStream(stream);
-            bitmap  = Bitmap.createScaledBitmap(bm, Math.max(1080, 1920), Math.max(1080, 1920), false);
+            bitmap  = Bitmap.createScaledBitmap(bm, width, height, false);
             stream.close();
             bm.recycle();
         } catch(IOException e) {
@@ -150,7 +158,6 @@ public class FingerPainterView extends View {
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-
             try {
                 // load cache file from bundle stored filename
                 File f = new File(bundle.getString("tempfile"));
@@ -177,6 +184,7 @@ public class FingerPainterView extends View {
         canvas.drawPath(path, paint);
     }
 
+    //Method altered to allways rescale canvas to fit current view size to prevent parts of image getting cut off.
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // called after the activity has been created when the view is inflated
@@ -186,7 +194,7 @@ public class FingerPainterView extends View {
                     // attempt to load the uri provided, scale to fit our canvas
                     InputStream stream = context.getContentResolver().openInputStream(uri);
                     Bitmap bm = BitmapFactory.decodeStream(stream);
-                    bitmap  = Bitmap.createScaledBitmap(bm, Math.max(w, h), Math.max(w, h), false);
+                    bitmap  = Bitmap.createScaledBitmap(bm, w,h, false);
                     stream.close();
                     bm.recycle();
                 } catch(IOException e) {
@@ -195,9 +203,11 @@ public class FingerPainterView extends View {
             }
             else {
                 // create a square bitmap so is drawable even after rotation to landscape
-                bitmap = Bitmap.createBitmap(Math.max(w,h), Math.max(w,h), Bitmap.Config.ARGB_8888);
+               bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
             }
         }
+        else
+            bitmap  = Bitmap.createScaledBitmap(bitmap, w,h, false);
         canvas = new Canvas(bitmap);
     }
 
