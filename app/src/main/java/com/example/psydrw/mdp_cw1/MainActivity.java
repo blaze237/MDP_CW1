@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-
-//Save brush data on resume
 //Do resume saving for sub activities to
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         //Grab reference to finger painter
         fView = (FingerPainterView)findViewById(R.id.fingerview);
 
+        fView.load(getIntent().getData());
+
         //Initialise inger painter setting variables
         brushColour = fView.getColour();
         brushWidth = fView.getBrushWidth();
@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null)
         {
             brushColour = savedInstanceState.getInt("Colour");
+            brushType = (Paint.Cap)savedInstanceState.getSerializable("Brush Type");
+            brushWidth = savedInstanceState.getInt("Brush Width");
+            fView.setBrush(brushType);
+            fView.setBrushWidth(brushWidth);
             fView.setColour(brushColour);
         }
     }
@@ -58,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onSaveInstanceState(state);
         state.putInt("Colour",brushColour);
+        state.putInt("Brush Width", brushWidth);
+        state.putSerializable("Brush Type",brushType);
     }
 
 
