@@ -17,6 +17,7 @@ package com.example.psydrw.mdp_cw1;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -25,18 +26,23 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 
 /**
@@ -115,6 +121,40 @@ public class FingerPainterView extends View {
         this.uri = uri;
     }
 
+    public void saveToFile()
+    {
+        //Set directory to save the image to
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        //Make the directory if it doesnt allready exist
+        dir.mkdir();
+
+        String fName = new Date().toString() + ".png";
+
+        //Setup the new file. Name is based on current date and time to ensure it is unique
+        File pictureFile = new File(dir,fName);
+
+        try {
+            //Setup output stream and pass bitmap into it
+            FileOutputStream output = new FileOutputStream(pictureFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
+
+            //Close the stream and inform android of prescence of the new file via broadcast call
+            output.flush();
+            output.close();
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(pictureFile)));
+
+            Toast.makeText(context,"Image " + fName + " saved." ,Toast.LENGTH_LONG).show();
+
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            Toast.makeText(context,"Error saving file!",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
     public void loadCustom(Uri uri)
     {
         int width = this.getWidth();
@@ -131,9 +171,12 @@ public class FingerPainterView extends View {
             bm.recycle();
         } catch(IOException e) {
             Log.e("FingerPainterView", e.toString());
+            Toast.makeText(context,"Failed to load image!",Toast.LENGTH_SHORT).show();
         }
 
+        Toast.makeText(context,"Image Loaded",Toast.LENGTH_SHORT).show();
         canvas = new Canvas(bitmap);
+
     }
 
     @Override
@@ -201,13 +244,17 @@ public class FingerPainterView extends View {
                     Log.e("FingerPainterView", e.toString());
                 }
             }
-            else {
+            else
+            {
                 // create a square bitmap so is drawable even after rotation to landscape
-               bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
+                bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
+                bitmap.eraseColor(0xffffffff); //Make background white so looks better when saving files
             }
         }
         else
             bitmap  = Bitmap.createScaledBitmap(bitmap, w,h, false);
+
+
         canvas = new Canvas(bitmap);
     }
 

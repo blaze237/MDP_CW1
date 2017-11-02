@@ -8,12 +8,27 @@
     android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/imageButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickImageSelect"
-        android:text="Select An Image" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClickImageSelect"
+            android:text="Select An Image" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClickSave"
+            android:text="Save To Image" />
+    </LinearLayout>
 
     <com.example.psydrw.mdp_cw1.FingerPainterView
         android:id="@+id/fingerview"

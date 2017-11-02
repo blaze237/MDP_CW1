@@ -28,14 +28,22 @@ public class ColourSelection extends AppCompatActivity {
         greenBar =(SeekBar) findViewById(R.id.greenBar);
         blueBar =(SeekBar) findViewById(R.id.blueBar);
 
-
-        int colour =  getIntent().getIntExtra("Current Colour",0xff000000);
-
-        //Extract rgb vals from colour
-        r = (colour >> 16) & 0xff;
-        g = (colour >> 8) & 0xff;
-        b = colour & 0xff;
-
+        //Restore state after app is rotated etc
+        //Not technically needed in this case as the rgb vals are reconstructed by the seek bars on progress methods once they are rebuilt but included for completeness.
+        if(savedInstanceState != null)
+        {
+            r = savedInstanceState.getInt("Red");
+            g = savedInstanceState.getInt("Green");
+            b = savedInstanceState.getInt("Blue");
+        }
+        else
+        {
+            int colour = getIntent().getIntExtra("Current Colour", 0xff000000);
+            //Extract rgb vals from colour
+            r = (colour >> 16) & 0xff;
+            g = (colour >> 8) & 0xff;
+            b = colour & 0xff;
+        }
         colourPreview = (View)findViewById(R.id.colourPreview);
         colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
 
@@ -97,6 +105,16 @@ public class ColourSelection extends AppCompatActivity {
 
         });
 
+    }
+
+    //Save state on rotation etc
+    @Override
+    protected void onSaveInstanceState(Bundle state)
+    {
+        super.onSaveInstanceState(state);
+        state.putInt("Red",r);
+        state.putInt("Green",g);
+        state.putInt("Blue",b);
     }
 
     @Override

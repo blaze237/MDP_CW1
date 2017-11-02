@@ -12,15 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-//Do resume saving for sub activities to
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int COLOUR_REQUEST = 1;
     private static final int BRUSH_REQUEST = 2;
     private static final int IMAGE_REQUEST = 3;
-    private static final int STORAGE_PERMISSION_REQUEST = 4;
-
+    private static final int STORAGE_PERMISSION_REQUEST_READ = 4;
+    private static final int STORAGE_PERMISSION_REQUEST_WRITE = 5;
 
     private FingerPainterView fView;
     private int brushColour;
@@ -50,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             brushColour = savedInstanceState.getInt("Colour");
             brushType = (Paint.Cap)savedInstanceState.getSerializable("Brush Type");
             brushWidth = savedInstanceState.getInt("Brush Width");
+
             fView.setBrush(brushType);
             fView.setBrushWidth(brushWidth);
             fView.setColour(brushColour);
@@ -104,13 +103,18 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
     {
         //If return a permision request of granted for external storage, then continue with opening the image picker activity the user had previously attempted to launch prior to enabling permission to do so
-        if(requestCode == STORAGE_PERMISSION_REQUEST)
+        if(requestCode == STORAGE_PERMISSION_REQUEST_READ)
         {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, IMAGE_REQUEST);
             }
+        }
+        else if(requestCode == STORAGE_PERMISSION_REQUEST_WRITE)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                fView.saveToFile();
         }
     }
 
@@ -141,11 +145,19 @@ public class MainActivity extends AppCompatActivity {
         }
         //If not, request them
         else
-        {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_REQUEST);
-        }
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_REQUEST_READ);
+
 
     }
 
 
+    public void onClickSave(View view)
+    {
+        //Check if permissions have been granted
+        if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            fView.saveToFile();
+        //If not, request them
+        else
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_REQUEST_WRITE);
+    }
 }

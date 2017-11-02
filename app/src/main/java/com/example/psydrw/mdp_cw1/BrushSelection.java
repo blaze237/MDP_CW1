@@ -19,8 +19,8 @@ public class BrushSelection extends AppCompatActivity
     private SeekBar widthBar;
     private ToggleButton roundToggle;
     private ToggleButton squareToggle;
-    private int width;
-    private Paint.Cap type;
+    private int brushWidth;
+    private Paint.Cap brushType;
 
 
 
@@ -31,15 +31,28 @@ public class BrushSelection extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brush_selection);
 
-        //Init brush width seek bar
+
+
+        //Restore data
+        if(savedInstanceState != null)
+        {
+            brushType =(Paint.Cap) savedInstanceState.getSerializable("Brush Type");
+            brushWidth = savedInstanceState.getInt("Brush Width");
+        }
+        else
+        {
+            brushWidth =  getIntent().getIntExtra("Brush Width",20);
+            brushType = (Paint.Cap) getIntent().getSerializableExtra("Brush Type");
+        }
+
+        //Init brush brushWidth seek bar
         widthBar = (SeekBar) findViewById(R.id.widthBar);
-        width =  getIntent().getIntExtra("Brush Width",20);
-        widthBar.setProgress(width);
+        widthBar.setProgress(brushWidth);
 
         widthBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                width = progress;
+                brushWidth = progress;
             }
 
             @Override
@@ -52,14 +65,12 @@ public class BrushSelection extends AppCompatActivity
 
         });
 
-        //Init type buttons
-        type = (Paint.Cap) getIntent().getSerializableExtra("Brush Type");
-
+        //Init brushType buttons
         roundToggle = (ToggleButton) findViewById(R.id.roundToggle);
         squareToggle = (ToggleButton) findViewById(R.id.squareToggle);
 
 
-        if(type == Paint.Cap.ROUND)
+        if(brushType == Paint.Cap.ROUND)
         {
             roundToggle.setChecked(true);
             roundToggle.setSelected(true);
@@ -71,12 +82,13 @@ public class BrushSelection extends AppCompatActivity
         }
     }
 
-    public void onRoundButtonClick(View view) {
-        type = Paint.Cap.ROUND;
-    }
-
-    public void onSquareButtonPress(View view) {
-        type = Paint.Cap.SQUARE;
+    //Save state on rotation etc
+    @Override
+    protected void onSaveInstanceState(Bundle state) 
+    {
+        super.onSaveInstanceState(state);
+        state.putSerializable("Brush Type" , brushType);
+        state.putInt("Brush Width" , brushWidth);
     }
 
     public void onRoundToggleClick(View view)
@@ -86,14 +98,14 @@ public class BrushSelection extends AppCompatActivity
             squareToggle.setChecked(true);
             squareToggle.setSelected(true);
 
-            type = Paint.Cap.SQUARE;
+            brushType = Paint.Cap.SQUARE;
         }
         else
         {
             squareToggle.setChecked(false);
             squareToggle.setSelected(false);
 
-            type = Paint.Cap.ROUND;
+            brushType = Paint.Cap.ROUND;
         }
 
     }
@@ -105,27 +117,33 @@ public class BrushSelection extends AppCompatActivity
             roundToggle.setChecked(true);
             roundToggle.setSelected(true);
 
-            type = Paint.Cap.ROUND;
+            brushType = Paint.Cap.ROUND;
         }
         else
         {
             roundToggle.setChecked(false);
             roundToggle.setSelected(false);
 
-            type = Paint.Cap.SQUARE;
+            brushType = Paint.Cap.SQUARE;
         }
+    }
 
-
+    @Override
+    public void onBackPressed()
+    {
+        Intent result = new Intent();
+        result.putExtra("New Width",brushWidth);
+        result.putExtra("New Type",brushType);
+        setResult(Activity.RESULT_OK, result);
+        finish();
     }
 
     public void returnMain(View view)
     {
         Intent result = new Intent();
-        result.putExtra("New Width",width);
-        result.putExtra("New Type",type);
+        result.putExtra("New Width",brushWidth);
+        result.putExtra("New Type",brushType);
         setResult(Activity.RESULT_OK, result);
         finish();
     }
-
-
 }
