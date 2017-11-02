@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_WRITE = 5;
 
     private FingerPainterView fView;
+    private LinearLayout buttonPanel1, buttonPanel2;
     private int brushColour;
     private int brushWidth;
     private Paint.Cap brushType;
@@ -36,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Grab reference to finger painter
         fView = (FingerPainterView)findViewById(R.id.fingerview);
+
+        buttonPanel1 = (LinearLayout)findViewById(R.id.buttonPanel1);
+        buttonPanel2 = (LinearLayout)findViewById(R.id.buttonPanel2);
+
+
 
         fView.load(getIntent().getData());
 
@@ -179,5 +186,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         confirmBox.show();
+    }
+
+    public void refresh()
+    {
+        buttonPanel1.invalidate();
+        buttonPanel2.invalidate();
     }
 }

@@ -33,6 +33,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -224,6 +225,7 @@ public class FingerPainterView extends View {
     protected void onDraw(Canvas canvas) {
         // canvas is white with a bitmap with alpha channel drawn over the top
         canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(bitmap, 0, 0, paint);
         // show current drawing path
         canvas.drawPath(path, paint);
@@ -281,6 +283,12 @@ public class FingerPainterView extends View {
                 invalidate();
                 break;
         }
+
+        //Tells main activity to invalidate button pannnels to fix rare  cases when the brush can draw over them
+        //Somewhat inelegant but only way i can think to do this, as onTouchEvent consumes the touch event, preventing use
+        //of custom onClick function in main activity.
+        ((MainActivity)(getContext())).refresh();
+
         return true;
     }
 }
