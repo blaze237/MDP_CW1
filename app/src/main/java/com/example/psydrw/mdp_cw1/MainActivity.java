@@ -2,6 +2,8 @@ package com.example.psydrw.mdp_cw1;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -159,5 +161,23 @@ public class MainActivity extends AppCompatActivity {
         //If not, request them
         else
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_REQUEST_WRITE);
+    }
+
+    public void clearCanvas(View view)
+    {
+        AlertDialog.Builder confirmBox = new AlertDialog.Builder(this);
+        confirmBox.setMessage("Erase canvas contents?");
+        confirmBox.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        fView.clear();
+                        fView.invalidate();
+                    }
+                });
+        confirmBox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        confirmBox.show();
     }
 }

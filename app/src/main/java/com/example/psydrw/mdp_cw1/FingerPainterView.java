@@ -121,6 +121,8 @@ public class FingerPainterView extends View {
         this.uri = uri;
     }
 
+    public void clear(){bitmap.eraseColor(0xffffffff);}
+
     public void saveToFile()
     {
         //Set directory to save the image to

@@ -42,7 +42,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/colourButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -50,12 +50,20 @@
             android:text="@string/colourButton" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/brushButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="SetBrush"
             android:text="@string/brushButton" />
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="clearCanvas"
+            android:text="Clear" />
 
     </LinearLayout>
 
