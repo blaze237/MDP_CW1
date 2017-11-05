@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.12"
-        android:text="Set Brush Colour"
+        android:text="@string/set_brush_colour"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <View
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="Red" />
+            android:text="@string/red" />
 
         <SeekBar
             android:id="@+id/redBar"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="Green" />
+            android:text="@string/green" />
 
         <SeekBar
             android:id="@+id/greenBar"
@@ -88,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="Blue" />
+            android:text="@string/blue" />
 
         <SeekBar
             android:id="@+id/blueBar"
@@ -108,11 +108,11 @@
 
         <Button
             android:id="@+id/Return"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="returnMain"
-            android:text="Done" />
+            android:text="@string/done" />
 
 
     </LinearLayout>

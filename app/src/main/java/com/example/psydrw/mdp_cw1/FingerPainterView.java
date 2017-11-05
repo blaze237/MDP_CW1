@@ -29,20 +29,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 
@@ -122,54 +118,58 @@ public class FingerPainterView extends View {
         this.uri = uri;
     }
 
+    //Clears the canvas by writing white to all pixels
     public void clear(){bitmap.eraseColor(0xffffffff);}
 
+    //Saves the canvas contents into a png file
     public void saveToFile()
     {
         //Set directory to save the image to
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        //Make the directory if it doesnt allready exist
-        dir.mkdir();
+        File dirct = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        //Make the directory if it doesn't already exist
+        dirct.mkdir();
 
+        //File name is set to be current date+time to ensure the filename is always unique
         String fName = new Date().toString() + ".png";
 
-        //Setup the new file. Name is based on current date and time to ensure it is unique
-        File pictureFile = new File(dir,fName);
+        //Setup the new file.
+        File pictureFile = new File(dirct,fName);
 
-        try {
+        try
+        {
             //Setup output stream and pass bitmap into it
             FileOutputStream output = new FileOutputStream(pictureFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
 
-            //Close the stream and inform android of prescence of the new file via broadcast call
+            //Close the stream and inform android of presence of the new file via broadcast call
             output.flush();
             output.close();
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(pictureFile)));
 
-            Toast.makeText(context,"Image " + fName + " saved." ,Toast.LENGTH_LONG).show();
-
-
+            //Inform user the file was saved successfully
+            Toast.makeText(context,"Image " + fName + " saved." ,Toast.LENGTH_SHORT).show();
         } catch (Exception e)
         {
+            //If there was an error saving the file for some reason, then inform the user.
             e.printStackTrace();
             Toast.makeText(context,"Error saving file!",Toast.LENGTH_SHORT).show();
         }
     }
 
-
-
+    //Allows for image loading to canvas on the fly.
     public void loadCustom(Uri uri)
     {
         int width = this.getWidth();
         int height = this.getHeight();
 
-        Log.d("myTag", "Load at size" + width + "x" + height);
-
         try {
             // attempt to load the uri provided, scale to fit our canvas
             InputStream stream = context.getContentResolver().openInputStream(uri);
             Bitmap bm = BitmapFactory.decodeStream(stream);
-            bitmap  = Bitmap.createScaledBitmap(bm, width, height, false);
+            //Create a mutable copy of the bitmap. This is needed due to cases in which the read in image needs no scaling, leading to
+            //'bitmap' not being scaled and hence inheriting the immutability of bm causing errors.
+            bitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
+            bitmap  = Bitmap.createScaledBitmap(bitmap, width, height, false);
             stream.close();
             bm.recycle();
         } catch(IOException e) {
@@ -179,7 +179,6 @@ public class FingerPainterView extends View {
 
         Toast.makeText(context,"Image Loaded",Toast.LENGTH_SHORT).show();
         canvas = new Canvas(bitmap);
-
     }
 
     @Override
@@ -218,6 +217,7 @@ public class FingerPainterView extends View {
 
             state = bundle.getParcelable("superState");
         }
+
         super.onRestoreInstanceState(state);
     }
 
@@ -232,6 +232,8 @@ public class FingerPainterView extends View {
     }
 
     //Method altered to allways rescale canvas to fit current view size to prevent parts of image getting cut off.
+    //Also prevents buggy behaviour on rotate where parts of the screen cannot be drawn to. I feel this is preferable to
+    //ensuring the image is allways square. Method also changed to set canvas backrground to white for better appearance of saved images
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // called after the activity has been created when the view is inflated
@@ -241,7 +243,10 @@ public class FingerPainterView extends View {
                     // attempt to load the uri provided, scale to fit our canvas
                     InputStream stream = context.getContentResolver().openInputStream(uri);
                     Bitmap bm = BitmapFactory.decodeStream(stream);
-                    bitmap  = Bitmap.createScaledBitmap(bm, w,h, false);
+                    //Create a mutable copy of the bitmap. This is needed due to cases in which the read in image needs no scaling, leading to
+                    //'bitmap' not being scaled and hence inheriting the immutability of bm causing errors.
+                    bitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
+                    bitmap  = Bitmap.createScaledBitmap(bitmap, w, h, false);
                     stream.close();
                     bm.recycle();
                 } catch(IOException e) {
@@ -250,18 +255,17 @@ public class FingerPainterView extends View {
             }
             else
             {
-                // create a square bitmap so is drawable even after rotation to landscape
                 bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
                 bitmap.eraseColor(0xffffffff); //Make background white so looks better when saving files
             }
         }
-        else
-            bitmap  = Bitmap.createScaledBitmap(bitmap, w,h, false);
-
-
+          else
+             bitmap  = Bitmap.createScaledBitmap(bitmap, w,h, false);
         canvas = new Canvas(bitmap);
     }
 
+    //Slightly altered to call refresh() function if parent activity. Needed to fix bug with brush drawing over gui elements.
+    //See main activity for more details
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
@@ -284,7 +288,7 @@ public class FingerPainterView extends View {
                 break;
         }
 
-        //Tells main activity to invalidate button pannnels to fix rare  cases when the brush can draw over them
+        //Tells main activity to invalidate button layouts to fix rare  cases when the brush can draw over them
         //Somewhat inelegant but only way i can think to do this, as onTouchEvent consumes the touch event, preventing use
         //of custom onClick function in main activity.
         ((MainActivity)(getContext())).refresh();

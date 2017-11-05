@@ -54,7 +54,7 @@ tools:context="com.example.psydrw.mdp_cw1.BrushSelection">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="Brush Width" />
+            android:text="@string/brush_width" />
 
         <SeekBar
             android:id="@+id/widthBar"
@@ -75,11 +75,11 @@ tools:context="com.example.psydrw.mdp_cw1.BrushSelection">
 
     <Button
         android:id="@+id/Return"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:onClick="returnMain"
-        android:text="Done" />
+        android:text="@string/done" />
 
 
 </LinearLayout>

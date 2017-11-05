@@ -5,4 +5,13 @@
     <string name="square">Square</string>
     <string name="round">Round</string>
     <string name="set_brush_type">Set Brush Type</string>
+    <string name="select_an_image">Select An Image</string>
+    <string name="save_to_image">Save To Image</string>
+    <string name="clear">Clear</string>
+    <string name="brush_width">Brush Width</string>
+    <string name="done">Done</string>
+    <string name="set_brush_colour">Set Brush Colour</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
 </resources>

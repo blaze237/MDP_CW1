@@ -3,21 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="D:\MDP_CW1\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="26.0.2"
-        sha1="86c67500a18de1797bddca31bf3b4b3e9637ff53">
-        <dex dex="D:\MDP_CW1\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_54e1107274db1e3e89b08ddae449595e9e9fb1bb\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="D:\MDP_CW1\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.2"
         sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
         <dex dex="D:\MDP_CW1\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_bd6fec7f035427fee6e40ffd9bff3d467ae78611\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\MDP_CW1\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.2"
+        sha1="86c67500a18de1797bddca31bf3b4b3e9637ff53">
+        <dex dex="D:\MDP_CW1\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_54e1107274db1e3e89b08ddae449595e9e9fb1bb\classes.dex" />
     </item>
 
 </items>

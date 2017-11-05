@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClickImageSelect"
-            android:text="Select An Image" />
+            android:text="@string/select_an_image" />
 
         <Button
             android:id="@+id/saveButton"
@@ -28,13 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClickSave"
-            android:text="Save To Image" />
+            android:text="@string/save_to_image" />
     </LinearLayout>
 
     <com.example.psydrw.mdp_cw1.FingerPainterView
         android:id="@+id/fingerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1" />
 
     <LinearLayout
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="clearCanvas"
-            android:text="Clear" />
+            android:text="@string/clear" />
 
     </LinearLayout>
 

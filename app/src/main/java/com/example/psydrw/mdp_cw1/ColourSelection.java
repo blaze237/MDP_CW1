@@ -11,11 +11,13 @@ import android.widget.SeekBar;
 
 public class ColourSelection extends AppCompatActivity {
 
+    //Store references to GUI elements
     private SeekBar redBar;
     private SeekBar greenBar;
     private SeekBar blueBar;
     private View colourPreview;
 
+    //Store current colour setting as individual colour channels
     private int r,g,b;
 
     @Override
@@ -24,11 +26,7 @@ public class ColourSelection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_colour_selection);
 
-        redBar =(SeekBar) findViewById(R.id.redBar);
-        greenBar =(SeekBar) findViewById(R.id.greenBar);
-        blueBar =(SeekBar) findViewById(R.id.blueBar);
-
-        //Restore state after app is rotated etc
+        //Restore state after app when it is resumed
         //Not technically needed in this case as the rgb vals are reconstructed by the seek bars on progress methods once they are rebuilt but included for completeness.
         if(savedInstanceState != null)
         {
@@ -36,57 +34,69 @@ public class ColourSelection extends AppCompatActivity {
             g = savedInstanceState.getInt("Green");
             b = savedInstanceState.getInt("Blue");
         }
-        else
+        else //If not restoring and this is first run, instead init values from intent
         {
             int colour = getIntent().getIntExtra("Current Colour", 0xff000000);
+
             //Extract rgb vals from colour
             r = (colour >> 16) & 0xff;
             g = (colour >> 8) & 0xff;
             b = colour & 0xff;
         }
+        initGUI();
+    }
+
+    //Called from onCreate, initialises all GUI elements
+    private void initGUI()
+    {
+        //Init seekbar references
+        redBar =(SeekBar) findViewById(R.id.redBar);
+        greenBar =(SeekBar) findViewById(R.id.greenBar);
+        blueBar =(SeekBar) findViewById(R.id.blueBar);
+
+        //Init colour preview box
         colourPreview = (View)findViewById(R.id.colourPreview);
         colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
-
 
         //Init scroll bars
         redBar.setProgress(r);
         greenBar.setProgress(g);
         blueBar.setProgress(b);
 
-        //Set up anonymous listener to grab data from the colour sliders
+        //Setup seekbar behaviour to automatically update stored values for colour channles to be equal to corresponding seekbar value
         redBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                   r = progress;
-                    colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
-                }
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                r = progress;
+                colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
+            }
 
-              @Override
-              public void onStartTrackingTouch(SeekBar seekBar) {
-              }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
-              @Override
-              public void onStopTrackingTouch(SeekBar seekBar) {
-              }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
 
-          });
+        });
 
         greenBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    g = progress;
-                    colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
-                }
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                g = progress;
+                colourPreview.setBackgroundColor(Color.argb(255, r, g, b));
+            }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
 
-            });
+        });
 
         blueBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -104,10 +114,9 @@ public class ColourSelection extends AppCompatActivity {
             }
 
         });
-
     }
 
-    //Save state on rotation etc
+    //Save state activity suspension
     @Override
     protected void onSaveInstanceState(Bundle state)
     {
@@ -117,27 +126,23 @@ public class ColourSelection extends AppCompatActivity {
         state.putInt("Blue",b);
     }
 
+    //Called when user presses back button on device
     @Override
     public void onBackPressed()
     {
+        //Save the current colour channel values into a single int and package them into the intent
         Intent result = new Intent();
-
-        int colour = Color.argb(255, r, g, b);
-
-        result.putExtra("New Colour",colour);
+        result.putExtra("New Colour",Color.argb(255, r, g, b));
         setResult(Activity.RESULT_OK, result);
         finish();
     }
 
-
-
+    //Called when user presses Done button
     public void returnMain(View view)
     {
+        //Save the current colour channel values into a single int and package them into the intent
         Intent result = new Intent();
-
-        int colour = Color.argb(255, r, g, b);
-
-        result.putExtra("New Colour",colour);
+        result.putExtra("New Colour",Color.argb(255, r, g, b));
         setResult(Activity.RESULT_OK, result);
         finish();
     }
